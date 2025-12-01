@@ -1,0 +1,11 @@
+﻿using AdventOfCode2025.Utils.Graph;
+
+namespace AdventOfCode2025.Utils.Pathfinding
+{
+    public interface IPathFinder<TNode> where TNode : IEquatable<TNode>, IComparable<TNode>
+    {
+        public bool HasSolution { get; }
+        public long TotalCost { get; }
+        public List<TNode> Path { get; }
+    }
+}
