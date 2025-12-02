@@ -102,6 +102,24 @@
             return sb.ToString();
         }
 
+        public static char[,] IntGridToCharGrid(int[,] grid)
+        {
+            int rows = grid.GetLength(0);
+            int cols = grid.GetLength(1);
+
+            char[,] result = new char[rows, cols];
+
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0; c < cols; c++)
+                {
+                    result[r, c] = (char)grid[r, c];
+                }
+            }
+
+            return result;
+        }
+
         public static List<(T,T)> Combinations<T>(List<T> input)
         {
             List<(T, T)> output = [];

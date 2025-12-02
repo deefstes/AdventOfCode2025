@@ -17,11 +17,11 @@ namespace AdventOfCode2025.Day01
                 var dir = instruction[0] == 'R' ? 1 : -1;
                 var amount = int.Parse(instruction[1..]);
 
-                dial = dial + dir * amount;
+                dial += dir * amount;
                 while (dial >= 100)
-                    dial = dial - 100;
+                    dial -= 100;
                 while (dial < 0)
-                    dial = dial + 100;
+                    dial += 100;
                 if (dial == 0)
                     countZeroes++;
             }
@@ -34,7 +34,6 @@ namespace AdventOfCode2025.Day01
             var instructions = _input.Split("\r\n");
             var dial = 50;
             var countZeroes = 0;
-            var prevDir = 0;
 
             foreach (var instruction in instructions)
             {

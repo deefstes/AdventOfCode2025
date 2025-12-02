@@ -12,9 +12,24 @@ if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SOLVE_CURRENT_DAY")
 if (String.IsNullOrEmpty(userInput))
     userInput = DateTime.Now.Day.ToString();
 
-if (!int.TryParse(userInput, out var day))
+var components = userInput.Split('.');
+
+if (!int.TryParse(components[0], out var day))
 {
-    Console.WriteLine("Incorrect day specified");
+    Console.WriteLine($"Incorrect day ({components[0]}) specified");
+    return;
+}
+
+var part = 0;
+if (components.Length > 1 && !int.TryParse(components[1], out part))
+{
+    Console.WriteLine($"Incorrect part ({components[1]}) specified");
+    return;
+}
+
+if (part<0 || part>2)
+{
+    Console.WriteLine($"Incorrect part ({part}) specified");
     return;
 }
 
@@ -32,7 +47,7 @@ if (solverType == null)
 
 var fileInput = File.ReadAllText($"Day{day:D2}\\input.txt");
 
-var solver = Activator.CreateInstance(solverType, new object[] { fileInput }) as ISolver;
+var solver = Activator.CreateInstance(solverType, [fileInput]) as ISolver;
 
 if (solver == null)
 {
@@ -40,10 +55,18 @@ if (solver == null)
     return;
 }
 
-var p1 = Utils.MeasureExecutionTime(() => solver.Part1());
-var p2 = Utils.MeasureExecutionTime(() => solver.Part2());
+(string, TimeSpan) p1 = default;
+(string, TimeSpan) p2 = default;
+
+if (part==0 || part==1)
+    p1 = Utils.MeasureExecutionTime(() => solver.Part1());
+
+if (part==0 || part==2)
+    p2 = Utils.MeasureExecutionTime(() => solver.Part2());
 
 Console.WriteLine();
 Console.WriteLine($"Solution for day {day}");
-Console.WriteLine($"Part 1 ({p1.Item2.Format()}): {p1.Item1}");
-Console.WriteLine($"Part 2 ({p2.Item2.Format()}): {p2.Item1}");
+if (part == 0 || part == 1)
+    Console.WriteLine($"Part 1 ({p1.Item2.Format()}): {p1.Item1}");
+if (part == 0 || part == 2)
+    Console.WriteLine($"Part 2 ({p2.Item2.Format()}): {p2.Item1}");
