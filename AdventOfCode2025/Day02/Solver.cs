@@ -52,7 +52,7 @@
             return total.ToString();
         }
 
-        private bool IsRepeatedTwice(long id)
+        private static bool IsRepeatedTwice(long id)
         {
             string idString = id.ToString();
 
@@ -61,13 +61,10 @@
 
             int half = idString.Length / 2;
 
-            string first = idString.Substring(0, half);
-            string second = idString.Substring(half, half);
-
-            return first == second;
+            return idString[..half] == idString[half..];
         }
 
-        private bool IsRepeatedN(long id)
+        private static bool IsRepeatedN(long id)
         {
             string idString = id.ToString();
 

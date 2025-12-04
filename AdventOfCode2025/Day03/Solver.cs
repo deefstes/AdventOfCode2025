@@ -32,9 +32,9 @@
             return total.ToString();
         }
 
-        private long LargestNumber(string s, int n)
+        private static long LargestNumber(string bank, int n)
         {
-            if (n <= 0 || n > s.Length)
+            if (n <= 0 || n > bank.Length)
                 throw new ArgumentException("n must be between 1 and the length of the string.");
 
             int start = 0;
@@ -46,11 +46,11 @@
                 int maxPos = start;
 
                 // The furthest we can search while still being able to pick enough digits later
-                int end = s.Length - (n - picked);
+                int end = bank.Length - (n - picked);
 
                 for (int i = start; i <= end; i++)
                 {
-                    int d = s[i] - '0';
+                    int d = bank[i] - '0';
                     if (d > maxDigit)
                     {
                         maxDigit = d;
