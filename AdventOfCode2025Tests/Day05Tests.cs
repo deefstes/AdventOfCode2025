@@ -12,7 +12,7 @@ namespace AdventOfCode2025.Tests.Day05
             Solver solver = new(File.ReadAllText($"Day05\\sample.txt"));
             var rsp = solver.Part1();
 
-            Assert.That(rsp, Is.EqualTo(""));
+            Assert.That(rsp, Is.EqualTo("3"));
         }
 
         [Test()]
@@ -21,7 +21,7 @@ namespace AdventOfCode2025.Tests.Day05
             Solver solver = new(File.ReadAllText($"Day05\\sample.txt"));
             var rsp = solver.Part2();
 
-            Assert.That(rsp, Is.EqualTo(""));
+            Assert.That(rsp, Is.EqualTo("14"));
         }
     }
 }

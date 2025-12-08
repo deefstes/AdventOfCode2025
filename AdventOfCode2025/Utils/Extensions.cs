@@ -102,6 +102,24 @@
             return sb.ToString();
         }
 
+        public static List<(int col, int row)> FindCells(this char[,] grid, char value)
+        {
+            var locations = new List<(int x, int y)>();
+            int cols = grid.GetLength(0);
+            int rows = grid.GetLength(1);
+
+            for (int row = 0; row < rows; row++)
+            {
+                for (int col = 0; col < cols; col++)
+                {
+                    if (grid[col, row] == value)
+                        locations.Add((col, row));
+                }
+            }
+
+            return locations;
+        }
+
         public static IEnumerable<string> GetColStrings(this char[,] grid)
         {
             for (var x = 0; x < grid.GetLength(0); x++)
