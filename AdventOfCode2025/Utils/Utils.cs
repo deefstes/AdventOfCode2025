@@ -246,6 +246,25 @@
 
             return indeterminates;
         }
+
+        public static T[,] TransposeGrid<T>(T[,] input)
+        {
+            int rows = input.GetLength(0);
+            int cols = input.GetLength(1);
+
+            T[,] output = new T[cols, rows];
+
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0; c < cols; c++)
+                {
+                    output[c, r] = input[r, c];
+                }
+            }
+
+            return output;
+        }
+
     }
 
     public class DefaultValueDictionary<TKey, TValue>(TValue defaultValue) : Dictionary<TKey, TValue> where TKey : notnull

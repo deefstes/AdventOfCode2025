@@ -47,7 +47,7 @@ if (solverType == null)
 
 var fileInput = File.ReadAllText($"Day{day:D2}\\input.txt");
 
-var solver = Activator.CreateInstance(solverType, [fileInput]) as ISolver;
+var (solver, spinUpTime) = Utils.MeasureExecutionTime(() => Activator.CreateInstance(solverType, [fileInput]) as ISolver);
 
 if (solver == null)
 {
@@ -66,7 +66,9 @@ if (part==0 || part==2)
 
 Console.WriteLine();
 Console.WriteLine($"Solution for day {day}");
+Console.WriteLine($"Constructor ({spinUpTime.Format()})");
 if (part == 0 || part == 1)
     Console.WriteLine($"Part 1 ({p1.Item2.Format()}): {p1.Item1}");
 if (part == 0 || part == 2)
     Console.WriteLine($"Part 2 ({p2.Item2.Format()}): {p2.Item1}");
+Console.WriteLine($"Overall ({(spinUpTime + p1.Item2 + p2.Item2).Format()})");
