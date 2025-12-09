@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using AdventOfCode2025.Utils;
+using System.Net;
 
 namespace AdventOfCode2025.Day01
 {
@@ -8,7 +9,7 @@ namespace AdventOfCode2025.Day01
 
         public string Part1()
         {
-            var instructions = _input.Split("\r\n");
+            var instructions = _input.AsList();
             var dial = 50;
             var countZeroes = 0;
 
@@ -18,10 +19,12 @@ namespace AdventOfCode2025.Day01
                 var amount = int.Parse(instruction[1..]);
 
                 dial += dir * amount;
+
                 while (dial >= 100)
                     dial -= 100;
                 while (dial < 0)
                     dial += 100;
+
                 if (dial == 0)
                     countZeroes++;
             }

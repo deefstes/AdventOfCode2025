@@ -1,5 +1,6 @@
 ﻿namespace AdventOfCode2025.Utils
 {
+    using AdventOfCode2025.Utils.Graph;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Text;
@@ -265,49 +266,91 @@
             return output;
         }
 
-    }
-
-    public class DefaultValueDictionary<TKey, TValue>(TValue defaultValue) : Dictionary<TKey, TValue> where TKey : notnull
-    {
-        private TValue DefaultValue { get; } = defaultValue;
-
-        public new TValue this[TKey key]
+        public static bool IsPointInPolygon(Coordinates point, List<Coordinates> poly)
         {
-            get => TryGetValue(key, out var t) ? t : DefaultValue;
-            set => base[key] = value;
-        }
-    }
+            int n = poly.Count;
 
-    // This is an attempt to add a Contains() method to the PriorityQueue but it doesn't seem to be
-    // working correctly (as discovered in Day 17's solution). I ended up using SimplePriorityQueue
-    // which I found a nuget package for. I may come back to fix this some time, but until then,
-    // don't use it.
-    public class CustomPriorityQueue<TElement, TPriority> : PriorityQueue<TElement, TPriority>
-    {
-        private List<TElement> elementList = [];
+            // First: check if point is on any edge
+            for (int i = 0; i < n; i++)
+            {
+                var a = poly[i];
+                var b = poly[(i + 1) % n];
 
-        public CustomPriorityQueue() : base()
-        {
-        }
+                // Check if point is collinear with edge segment a->b and lies within bounds
+                if (IsPointOnSegment(point, a, b))
+                    return true;
+            }
 
-        public new void Enqueue(TElement item, TPriority priority)
-        {
-            base.Enqueue(item, priority);
-            elementList.Add(item);
-        }
+            // Standard ray-casting
+            bool inside = false;
+            for (int i = 0, j = n - 1; i < n; j = i++)
+            {
+                double xi = poly[i].X, yi = poly[i].Y;
+                double xj = poly[j].X, yj = poly[j].Y;
 
-        public new TElement Dequeue()
-        {
-            var element = base.Dequeue();
-            if (!elementList.Remove(element))
-                throw new InvalidDataException();
-
-            return element;
+                if (((yi > point.Y) != (yj > point.Y)) &&
+                    (point.X < (xj - xi) * (point.Y - yi) / (yj - yi) + xi))
+                {
+                    inside = !inside;
+                }
+            }
+            return inside;
         }
 
-        public bool Contains(TElement item)
+        public static bool IsPointOnSegment(Coordinates p, Coordinates a, Coordinates b)
         {
-            return elementList.Contains(item);
+            // Check if point is within bounding box
+            if (p.X < Math.Min(a.X, b.X) || p.X > Math.Max(a.X, b.X) ||
+                p.Y < Math.Min(a.Y, b.Y) || p.Y > Math.Max(a.Y, b.Y))
+                return false;
+
+            // Check collinearity: (b - a) x (p - a) == 0
+            double cross = (b.X - a.X) * (p.Y - a.Y) - (b.Y - a.Y) * (p.X - a.X);
+            return Math.Abs(cross) < 1e-9; // allow floating point tolerance
+        }
+
+        /// <summary>
+        /// This function checks whether two orthogonal lines are perpendicular and intersect. Lines that but up against each other are not counted as interesecting.
+        /// </summary>
+        public static bool DoesLinesIntersect(
+            (Coordinates Line1Start, Coordinates Line1End) line1,
+            (Coordinates Line2Start, Coordinates Line2End) line2)
+        {
+            // Determine orientation of line1
+            bool line1Horizontal = line1.Line1Start.Y == line1.Line1End.Y;
+            bool line1Vertical = line1.Line1Start.X == line1.Line1End.X;
+
+            // Determine orientation of line2
+            bool line2Horizontal = line2.Line2Start.Y == line2.Line2End.Y;
+            bool line2Vertical = line2.Line2Start.X == line2.Line2End.X;
+
+            // Only perpendicular pairs (one horizontal, one vertical) can intersect
+            if (!((line1Horizontal && line2Vertical) || (line1Vertical && line2Horizontal)))
+                return false;
+
+            // Assign horizontal and vertical lines consistently
+            var horizontal = line1Horizontal ? line1 : line2;
+            var vertical = line1Vertical ? line1 : line2;
+
+            // Horizontal line endpoints
+            int hx1 = (int)Math.Min(horizontal.Item1.X, horizontal.Item2.X);
+            int hx2 = (int)Math.Max(horizontal.Item1.X, horizontal.Item2.X);
+            int hy = (int)horizontal.Item1.Y;
+
+            // Vertical line endpoints
+            int vy1 = (int)Math.Min(vertical.Item1.Y, vertical.Item2.Y);
+            int vy2 = (int)Math.Max(vertical.Item1.Y, vertical.Item2.Y);
+            int vx = (int)vertical.Item1.X;
+
+            // Intersection point
+            int ix = vx;
+            int iy = hy;
+
+            // Exclude intersections on endpoints
+            bool onHorizontal = ix > hx1 && ix < hx2;
+            bool onVertical = iy > vy1 && iy < vy2;
+
+            return onHorizontal && onVertical;
         }
     }
 }

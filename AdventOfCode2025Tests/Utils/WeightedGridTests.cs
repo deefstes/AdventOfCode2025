@@ -49,7 +49,7 @@ namespace AdventOfCode2025.Tests.Utils
 
             var grid = new WeightedGrid<GraphNode>(array);
 
-            var str = grid.Draw(n => n?.Value.ToString());
+            var str = grid.Draw(n => n == null ? "" : n.Value.ToString());
             Assert.That(str, Is.EqualTo("1 1 1 1 1 1 1 1 1 1\r\n"
                                       + "1 1 1 1 1 1 1 1 1 1\r\n"
                                       + "1 1 1 1 1 1 1 1 1 1\r\n"

@@ -57,9 +57,7 @@ namespace AdventOfCode2025.Utils.Graph
 
         public bool DeleteNode(Coordinates coords)
         {
-            if (_nodes.ContainsKey(coords))
-                _nodes.Remove(coords);
-            else
+            if (!_nodes.Remove(coords))
                 return false;
 
             return true;
@@ -90,7 +88,7 @@ namespace AdventOfCode2025.Utils.Graph
                     else if (pathFinder != null && pathFinder.Path.Count != 0 && node != null && pathFinder.Path.Last().Equals(node)) { sb.Append('F'); }
                     else if (pathFinder != null && pathFinder.Path.Count != 0 && node != null && pathFinder.Path.Contains(_nodes[coords])) { sb.Append('*'); }
                     else { sb.Append(renderFunc(_nodes[coords])); }
-                    sb.Append(" ");
+                    sb.Append(' ');
                 }
                 sb.AppendLine();
             }
@@ -108,7 +106,7 @@ namespace AdventOfCode2025.Utils.Graph
                 for (var x = 0; x < Height; x++)
                 {
                     if (x != 0)
-                        sb.Append(" ");
+                        sb.Append(' ');
 
                     if (_nodes.TryGetValue(new(x, y), out TNode? node))
                     {

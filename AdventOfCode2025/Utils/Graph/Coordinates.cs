@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace AdventOfCode2025.Utils.Graph
+﻿namespace AdventOfCode2025.Utils.Graph
 {
     public class Coordinates(long x, long y, long z = 0) : IEquatable<Coordinates>
     {

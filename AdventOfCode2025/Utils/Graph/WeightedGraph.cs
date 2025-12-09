@@ -7,7 +7,7 @@ namespace AdventOfCode2025.Utils.Graph
 {
     public class WeightedGraph<TNode> : IWeightedGraph<TNode> where TNode : IComparable<TNode>, IEquatable<TNode>
     {
-        private bool _directed;
+        private readonly bool _directed;
         private readonly Dictionary<string, TNode> _nodes = [];
         private readonly Dictionary<(TNode, TNode), int> _connections = [];
         private readonly Func<TNode, TNode, int> _costFunction;
@@ -25,8 +25,14 @@ namespace AdventOfCode2025.Utils.Graph
 
         public bool AddConnection(TNode from, TNode to, int cost)
         {
-            _nodes[from.ToString()] = from;
-            _nodes[to.ToString()] = to;
+            var keyFrom = from.ToString();
+            var keyTo = to.ToString();
+            
+            if (string.IsNullOrEmpty(keyFrom) || string.IsNullOrEmpty(keyTo))
+                return false;
+
+            _nodes[keyFrom] = from;
+            _nodes[keyTo] = to;
 
             _connections[(from, to)] = cost;
             if (!_directed)
@@ -76,7 +82,7 @@ namespace AdventOfCode2025.Utils.Graph
 
         public string ToUML(Func<TNode?, string> renderFunc)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
             sb.AppendLine("@startuml");
 

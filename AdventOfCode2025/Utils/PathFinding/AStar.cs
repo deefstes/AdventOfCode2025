@@ -37,9 +37,10 @@ namespace AdventOfCode2025.Utils.Pathfinding
                 foreach (var next in graph.Neighbours(current))
                 {
                     long newCost = _costSoFar[current] + graph.Cost(current, next);
-                    if (!_costSoFar.ContainsKey(next) || newCost < _costSoFar[next])
+                    if (!_costSoFar.TryGetValue(next, out long value) || newCost < value)
                     {
-                        _costSoFar[next] = newCost;
+                        value = newCost;
+                        _costSoFar[next] = value;
                         long priority = newCost + Heuristic(next, finish);
                         frontier.Enqueue(next, priority);
                         _cameFrom[next] = current;

@@ -5,8 +5,8 @@ namespace AdventOfCode2025.Day08
     public class Solver : ISolver
     {
         private readonly string _input;
-        private readonly List<(int x, int y, int z)> coords = [];
-        private readonly List<(long dist, int a, int b)> pairs = [];
+        private readonly List<(int x, int y, int z)> _coords = [];
+        private readonly List<(long dist, int a, int b)> _pairs = [];
 
         public Solver(string input)
         {
@@ -15,15 +15,15 @@ namespace AdventOfCode2025.Day08
             foreach (var coord in _input.AsList())
             {
                 var vals = coord.Split(',');
-                coords.Add((int.Parse(vals[0]), int.Parse(vals[1]), int.Parse(vals[2])));
+                _coords.Add((int.Parse(vals[0]), int.Parse(vals[1]), int.Parse(vals[2])));
             }
 
             // Calculate squared distances between all coordinate pairs
-            for (int i = 0; i < coords.Count; i++)
-                for (int j = i + 1; j < coords.Count; j++)
-                    pairs.Add((DistanceSquared(coords[i], coords[j]), i, j));
+            for (int i = 0; i < _coords.Count; i++)
+                for (int j = i + 1; j < _coords.Count; j++)
+                    _pairs.Add((DistanceSquared(_coords[i], _coords[j]), i, j));
 
-            pairs.Sort((p, q) => p.dist.CompareTo(q.dist));
+            _pairs.Sort((p, q) => p.dist.CompareTo(q.dist));
         }
 
         public string Part1()
@@ -85,21 +85,21 @@ namespace AdventOfCode2025.Day08
         private List<int> GetGroupSizes(
             int connections)
         {
-            int[] parent = new int[coords.Count];
-            int[] size = new int[coords.Count];
+            int[] parent = new int[_coords.Count];
+            int[] size = new int[_coords.Count];
 
-            for (int i = 0; i < coords.Count; i++)
+            for (int i = 0; i < _coords.Count; i++)
             {
                 parent[i] = i;
                 size[i] = 1;
             }
 
-            for (int i = 0; i < connections && i < pairs.Count; i++)
-                JoinCircuits(parent, size, pairs[i].a, pairs[i].b);
+            for (int i = 0; i < connections && i < _pairs.Count; i++)
+                JoinCircuits(parent, size, _pairs[i].a, _pairs[i].b);
 
             var groupSizes = new Dictionary<int, int>();
 
-            for (int i = 0; i < coords.Count; i++)
+            for (int i = 0; i < _coords.Count; i++)
             {
                 int root = FindRoot(parent, i);
                 if (!groupSizes.ContainsKey(root))
@@ -107,32 +107,30 @@ namespace AdventOfCode2025.Day08
                 groupSizes[root]++;
             }
 
-            return groupSizes.Values
-                             .OrderByDescending(x => x)
-                             .ToList();
+            return [.. groupSizes.Values.OrderByDescending(x => x)];
         }
 
         private ((int x, int y, int z) A, (int x, int y, int z) B) ConnectUntilSingleGroup()
         {
-            int[] parent = new int[coords.Count];
-            int[] size = new int[coords.Count];
+            int[] parent = new int[_coords.Count];
+            int[] size = new int[_coords.Count];
 
-            for (int i = 0; i < coords.Count; i++)
+            for (int i = 0; i < _coords.Count; i++)
             {
                 parent[i] = i;
                 size[i] = 1;
             }
 
-            int components = coords.Count;
+            int components = _coords.Count;
 
-            foreach (var p in pairs)
+            foreach (var (dist, a, b) in _pairs)
             {
-                if (JoinCircuits(parent, size, p.a, p.b))
+                if (JoinCircuits(parent, size, a, b))
                 {
                     components--;
 
                     if (components == 1)
-                        return (coords[p.a], coords[p.b]);
+                        return (_coords[a], _coords[b]);
                 }
             }
 

@@ -1,6 +1,7 @@
 ﻿namespace AdventOfCode2025.Tests.Utils
 {
     using AdventOfCode2025.Utils;
+    using AdventOfCode2025.Utils.Graph;
     using NUnit.Framework;
     using System.Globalization;
 
@@ -18,7 +19,7 @@
         [TestCase("qwerty\r\nasdfgh  \r\nzxcvbn ", "qwerty,asdfgh,zxcvbn", TestName = "Trailing whitespace in last line")]
         public void AsListTest(string input, string output)
         {
-            Assert.That(string.Join(",", input.AsList().ToArray()), Is.EqualTo(output));
+            Assert.That(string.Join(",", [.. input.AsList()]), Is.EqualTo(output));
         }
 
         [Test()]
@@ -180,6 +181,29 @@
 
             // Assert
             Assert.That(resp, Is.EqualTo(y));
+        }
+
+        [Test()]
+        [TestCase(2, 3, true)]
+        [TestCase(11, 3, true)]
+        [TestCase(11, 5, true)]
+        [TestCase(2, 5, true)]
+        [TestCase(5, 4, true)]
+        [TestCase(1, 2, false)]
+        [TestCase(3, 2, false)]
+        [TestCase(3, 6, false)]
+        public void IsPointInPolygonTest(int x, int y, bool expected)
+        {
+            var poly = new List<Coordinates>() {
+                new(2,3),
+                new(11,3),
+                new(11,5),
+                new(2,5)
+            };
+
+            var inside = Utils.IsPointInPolygon(new Coordinates(x, y), poly);
+
+            Assert.AreEqual(expected, inside);
         }
     }
 }

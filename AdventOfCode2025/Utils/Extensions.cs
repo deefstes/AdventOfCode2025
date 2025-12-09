@@ -33,13 +33,12 @@
         /// <returns>IList<string></returns>
         public static IList<string> AsList(this string input)
         {
-            return input
+            return [.. input
                 .Trim()
                 .Replace("\r", "")
                 .Split('\n')
                 .ToList()
-                .Select(s => s.Trim())
-                .ToList();
+                .Select(s => s.Trim())];
         }
 
         public static char[,] AsGrid(this string input)
@@ -139,7 +138,7 @@
 
             for (int start = 0; start < rows + cols - 1; start++)
             {
-                List<char> diagonal = new List<char>();
+                var diagonal = new List<char>();
                 for (int i = 0; i <= start; i++)
                 {
                     int row = i;
@@ -151,12 +150,12 @@
                     }
                 }
                 if (diagonal.Count > 0)
-                    yield return new string(diagonal.ToArray());
+                    yield return new string([.. diagonal]);
             }
 
             for (int start = 0; start < rows + cols - 1; start++)
             {
-                List<char> diagonal = new List<char>();
+                var diagonal = new List<char>();
                 for (int i = 0; i <= start; i++)
                 {
                     int row = i;
@@ -168,7 +167,7 @@
                     }
                 }
                 if (diagonal.Count > 0)
-                    yield return new string(diagonal.ToArray());
+                    yield return new string([.. diagonal]);
             }
         }
 
@@ -198,7 +197,6 @@
 
         public static List<Coordinates> GetEnclosed(this List<Coordinates> path, int gridWidth, int gridHeight)
         {
-            List<Coordinates> toBeChecked = [];
             List<Coordinates> enclosed = [];
 
             for (int x = 0; x < gridWidth; x++)
@@ -229,7 +227,7 @@
         public static long CountOutside(this List<Coordinates> path, long gridWidth, long gridHeight)
         {
             var outside = FloodFill(path, new((int)gridWidth-1, (int)gridHeight-1), gridWidth, gridHeight);
-            return outside.Count();
+            return outside.Count;
         }
 
         public static List<Coordinates> FloodFill(this List<Coordinates> path, Coordinates start, long gridWidth, long gridHeight)
@@ -380,7 +378,7 @@
             var S = new HashSet<T>(nodes.Where(n => edges.All(e => e.Item2.Equals(n) == false)));
 
             // while S is non-empty do
-            while (S.Any())
+            while (S.Count > 0)
             {
 
                 //  remove a node n from S
@@ -408,10 +406,10 @@
             }
 
             // if graph has edges then
-            if (edges.Any())
+            if (edges.Count > 0)
             {
                 // return error (graph has at least one cycle)
-                return null;
+                throw new InvalidOperationException("Graph has at least one cycle");
             }
             else
             {
