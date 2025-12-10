@@ -5,11 +5,13 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="OptimizedPriorityQueue" Version="5.1.0" />
+	<PackageReference Include="Microsoft.Z3" Version="4.12.2" />
   </ItemGroup>
 
   <ItemGroup>
